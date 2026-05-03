@@ -1,4 +1,5 @@
 const Profile = require("../models/Profile");
+const connectDB = require("../config/db");
 const {
   calculateBMI,
   calculateWater,
@@ -9,6 +10,7 @@ const {
 // CREATE OR UPDATE PROFILE
 const upsertProfile = async (req, res) => {
   try {
+    await connectDB(); 
     const { age, gender, weight, height, goal } = req.body;
 
     let profile = await Profile.findOne({ user: req.user.id });
@@ -42,6 +44,7 @@ const upsertProfile = async (req, res) => {
 // GET PROFILE
 const getProfile = async (req, res) => {
   try {
+    await connectDB(); 
     const profile = await Profile.findOne({ user: req.user.id });
 
     if (!profile) {
@@ -65,6 +68,7 @@ const getProfile = async (req, res) => {
 // TOGGLE FAVORITE
 const toggleFavorite = async (req, res) => {
   try {
+    await connectDB(); 
     const { mealId } = req.body;
     const profile = await Profile.findOne({ user: req.user.id });
     if (!profile) return res.status(404).json({ success: false, message: "Profile not found" });
@@ -85,6 +89,7 @@ const toggleFavorite = async (req, res) => {
 // GET FAVORITES
 const getFavorites = async (req, res) => {
   try {
+    await connectDB(); 
     const profile = await Profile.findOne({ user: req.user.id }).populate('favorites');
     if (!profile) return res.status(404).json({ success: false, message: "Profile not found" });
     res.json({ success: true, favorites: profile.favorites });
@@ -96,6 +101,7 @@ const getFavorites = async (req, res) => {
 // UPDATE GROCERY CHECKLIST
 const updateGroceryChecklist = async (req, res) => {
   try {
+    await connectDB(); 
     const { checkedItems } = req.body;
     const profile = await Profile.findOne({ user: req.user.id });
     if (!profile) return res.status(404).json({ success: false, message: "Profile not found" });

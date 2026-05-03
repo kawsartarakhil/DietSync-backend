@@ -1,4 +1,5 @@
 const Meal = require("../models/Meal");
+const connectDB = require("../config/db");
 const Profile = require("../models/Profile");
 const { calculateCalories } = require("../utils/calculations");
 const {
@@ -11,6 +12,7 @@ const {
 // 🍽️ Recommend meals
 const recommendMeals = async (req, res) => {
   try {
+    await connectDB(); 
     const { ingredients = [] } = req.body;
 
     if (!Array.isArray(ingredients)) {
@@ -71,6 +73,7 @@ const recommendMeals = async (req, res) => {
 
 const generateSingleMeal = async (req, res) => {
   try {
+    await connectDB(); 
     const profile = await Profile.findOne({ user: req.user.id });
 
     if (!profile) {
@@ -102,6 +105,7 @@ const generateSingleMeal = async (req, res) => {
 
 const generatePlan = async (req, res) => {
   try {
+    await connectDB(); 
     const profile = await Profile.findOne({ user: req.user.id });
 
     if (!profile) {
