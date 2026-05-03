@@ -2,16 +2,15 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 
-const connectDB = require("./config/db");
-
 // Swagger
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
 
 dotenv.config();
 
-// Connect database
-connectDB();
+// Database connection is NOT called here anymore.
+// Each route that needs the DB should call connectDB() with caching.
+// This avoids timeout issues in serverless environments.
 
 const app = express();
 

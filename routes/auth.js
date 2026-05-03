@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+const connectDB = require("../config/db"); // add this
 const User = require("../models/User");
 const authMiddleware = require("../middleware/auth");
 
@@ -42,6 +42,7 @@ const authMiddleware = require("../middleware/auth");
  */
 router.post("/register", async (req, res) => {
   try {
+    await connectDB();
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
@@ -89,6 +90,7 @@ router.post("/register", async (req, res) => {
  */
 router.post("/login", async (req, res) => {
   try {
+    await connectDB();
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
@@ -124,8 +126,13 @@ router.post("/login", async (req, res) => {
  *         description: Current user returned
  */
 router.get("/me", authMiddleware, async (req, res) => {
-  const user = await User.findById(req.user.id).select("-password");
-  res.json({ success: true, user });
+  try {
+    await connectDB();
+    const user = await User.findById(req.user.id).select("-password");
+    res.json({ success: true, user });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
 });
 
 module.exports = router;
